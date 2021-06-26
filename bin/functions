@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# shellcheck source=/dev/null
+
+set -o nounset -o pipefail -o errexit
+
+function install {
+	echo "Install"
+	echo "${ASDF_INSTALL_VERSION}"
+	echo "${ASDF_INSTALL_PATH}"
+	curl -L https://istio.io/downloadIstio | sh -
+	mv -v "./istio-${ASDF_INSTALL_VERSION}/*" "${ASDF_INSTALL_PATH}"
+}
+
+function list-all {
+	curl -sL https://github.com/istio/istio/releases | \
+                  grep -o 'releases/[0-9]*.[0-9]*.[0-9]*/' | sort --version-sort | awk -F'/' '{ print $2}'
+}
+
+function uninstall {
+   echo "UnInstall"
+   echo "${ASDF_INSTALL_VERSION}"
+   echo "${ASDF_INSTALL_PATH}"
+   
+}
+
+case "$(basename "${0}")" in
+    list-all) list-all
+              ;;
+    install) install
+             ;;
+    uninstall) uninstall ;;
+esac
