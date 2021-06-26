@@ -3,11 +3,26 @@
 
 set -o nounset -o pipefail -o errexit
 
+	# Determine Istio version to download
+function which_istio_version {
+	if [ -z "$ASDF_INSTALL_VERSION" ] || [ "$ASDF_INSTALL_VERSION" == "latest" ];
+	then
+	ISTIO_VERSION="$(curl -sL https://github.com/istio/istio/releases | \
+					grep -o 'releases/[0-9]*.[0-9]*.[0-9]*/' | sort --version-sort | \
+					tail -1 | awk -F'/' '{ print $2}')"
+	ISTIO_VERSION="${ISTIO_VERSION##*/}"
+	else
+	  ISTIO_VERSION="${ASDF_INSTALL_VERSION}"
+	fi
+	echo "${ISTIO_VERSION}"
+}
+
 function install {
 	echo "Install"
 	echo "${ASDF_INSTALL_VERSION}"
 	echo "${ASDF_INSTALL_PATH}"
-	curl -L https://istio.io/downloadIstio | sh -
+	curl -L https://istio.io/downloadIstio \
+	  | ISTIO_VERSION="$(which_istio_version)" sh -
 	mv -v "./istio-${ASDF_INSTALL_VERSION}/*" "${ASDF_INSTALL_PATH}"
 }
 
