@@ -3,7 +3,7 @@ name: asdf istio build and release
 on:
   push:
     paths:
-      - "**"
+      - "bin/**"
       - "!.github/workflows/**"
       - ".github/workflows/main.yml"
 jobs:
