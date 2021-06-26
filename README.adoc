@@ -5,8 +5,8 @@ The https://asdf-vm.com/[asdf-vm] plugin to install and manage multiple https://
 == Pre-requisites
 
 - https://asdf-vm.com/[asdf-vm]
-- [bash v5.0](https://www.gnu.org/software/bash/)
-- [curl](https://curl.haxx.se/)
+- https://www.gnu.org/software/bash/[bash v5.0]
+- https://curl.haxx.se/[curl] or https://www.gnu.org/software/wget/[wget]
 
 == Install
 
