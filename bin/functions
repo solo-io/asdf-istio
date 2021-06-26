@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# shellcheck source=/dev/null
+source "$ASDF_DIR/lib/utils.bash"
+CACHE_DIR="${TMPDIR:-/tmp}/istio.releases"
+
+if [ ! -d "${CACHE_DIR}" ]
+then
+    mkdir -p "${CACHE_DIR}"
+fi
+
+trap 'test -d "${TEMP_DIR}" && rm -rf "${TEMP_DIR}"' EXIT
+
+function cache_istio_versions {
+ local cache_file="${CACHE_DIR}/istio.releases"
+  if [ ! -f "$cache_file" ];
+  then
+	curl -sL https://github.com/istio/istio/releases | \
+                  grep -o 'releases/[0-9]*.[0-9]*.[0-9]*/' | sort --version-sort | awk -F'/' '{ print $2}' > "$cache_file"
+  fi
+}
+
+# Determine Istio version to download
+function which_istio_version {
+	cache_istio_versions
+	local cache_file="${CACHE_DIR}/istio.releases"
+	if [ -z "$ASDF_INSTALL_VERSION" ] || [ "$ASDF_INSTALL_VERSION" == "latest" ];
+	then
+	ISTIO_VERSION="$(sort --version-sort < "${cache_file}" | tail -n1)"
+	ISTIO_VERSION="${ISTIO_VERSION##*/}"
+	else
+	  ISTIO_VERSION="${ASDF_INSTALL_VERSION}"
+	fi
+	echo "${ISTIO_VERSION}"
+}
+
+function install {	
+	echo "Downloading and Istio $(which_istio_version)"
+	curl -sL https://istio.io/downloadIstio |\
+	   ISTIO_VERSION="$(which_istio_version)" sh - &
+	wait 
+	mv ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
+	rm -rf ./istio-"${ASDF_INSTALL_VERSION}"
+}
+
+function list-all {
+	cache_istio_versions
+	local cache_file="${CACHE_DIR}/istio.releases"
+	tr '\n' ' ' < "$cache_file"
+}
+
+function uninstall {
+   rm -rf "${ASDF_INSTALL_PATH}"
+}
+
+case "$(basename "${0}")" in
+    list-all) list-all
+              ;;
+    install) install
+             ;;
+    uninstall) uninstall ;;
+esac
