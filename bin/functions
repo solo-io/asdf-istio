@@ -42,7 +42,7 @@ function install {
 	fi
 	chmod +x "$install_file"
 	ISTIO_VERSION="$(which_istio_version)" 
-  	nohup ./"$install_file" &
+  	nohup "$install_file" &
 	echo "Downloaded Istio $(which_istio_version)"
 	wait
 	mv ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
