@@ -37,7 +37,7 @@ function install {
 	curl -L https://istio.io/downloadIstio \
 	  | ISTIO_VERSION="$(which_istio_version)" sh - &>/dev/null
 	echo "Downloading and Installing Istio: $(which_istio_version)"
-	mv -v ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
+	mv ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
 	rm -rf ./istio-"${ASDF_INSTALL_VERSION}"
 }
 
