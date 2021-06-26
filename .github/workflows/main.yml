@@ -1,0 +1,28 @@
+name: asdf istio build and release
+
+on:
+  push:
+    paths:
+      - "**"
+      - "!.github/workflows/**"
+      - ".github/workflows/main.yml"
+jobs:
+  buildAnDeploySite:
+    name: "Build site with Antora"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: asdf_plugin_test
+        uses: asdf-vm/actions/plugin-test@v1
+        run: |
+          asdf plugin test istio . 'istioctl version --short --remote=false'
+        env:
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided
+
+      - uses: GoogleCloudPlatform/release-please-action@v2.7.0
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: simple
+          bump-minor-pre-major: true
