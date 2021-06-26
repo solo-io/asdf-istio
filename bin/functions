@@ -38,7 +38,7 @@ function install {
 	local install_file="${CACHE_DIR}/downloadAndInstallIstio.sh"
 	if [ ! -f "$install_file" ];
 	then 
-	  curl -o "$install_file" -sL https://istio.io/downloadIstio
+	  nohup curl -o "$install_file" -sL https://istio.io/downloadIstio &
 	fi
 	chmod +x "$install_file"
 	ISTIO_VERSION="$(which_istio_version)" 
