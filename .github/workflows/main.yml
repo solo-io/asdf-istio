@@ -1,4 +1,4 @@
-name: asdf istio build and release
+name: Build and Release Plugin
 
 on:
   push:
@@ -8,13 +8,16 @@ on:
       - ".github/workflows/main.yml"
 jobs:
   buildAnDeploySite:
-    name: "Build site with Antora"
+    name: "Build and Release Plugin"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: asdf_plugin_test
         run: |
+          sudo apt install curl git
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+          . $HOME/.asdf/asdf.sh
           asdf plugin test istio . 'istioctl version --short --remote=false'
         env:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided
