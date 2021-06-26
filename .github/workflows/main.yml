@@ -35,7 +35,7 @@ jobs:
           sudo apt install curl git
           git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "${ASDF_VERSION}"
           . $HOME/.asdf/asdf.sh
-          asdf plugin test istio . 'istioctl version --short --remote=false'
+          INSTALLED_VERSION=$(asdf plugin test istio . 'istioctl version --short --remote=false')
           echo "Latest Istio Version ... ${ISTIO_LATEST_VERSION}"
           echo "Installed Istio ... ${INSTALLED_VERSION}"
           [[ "${ISTIO_LATEST_VERSION}" == "${INSTALLED_VERSION}" ]] && installed="OK" || installed="KO"

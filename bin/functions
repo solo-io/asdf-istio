@@ -35,8 +35,9 @@ function which_istio_version {
 
 function install {	
 	echo "Downloading and Istio $(which_istio_version)"
-	curl -sL https://istio.io/downloadIstio \
-	  ISTIO_VERSION="$(which_istio_version)" sh - 
+	curl -sL https://istio.io/downloadIstio |\
+	   ISTIO_VERSION="$(which_istio_version)" sh - &
+	wait 
 	mv ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
 	rm -rf ./istio-"${ASDF_INSTALL_VERSION}"
 }
@@ -54,7 +55,7 @@ function uninstall {
 case "$(basename "${0}")" in
     list-all) list-all
               ;;
-    install) install‸
+    install) install
              ;;
     uninstall) uninstall ;;
 esac
