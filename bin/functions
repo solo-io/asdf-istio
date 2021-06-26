@@ -34,25 +34,18 @@ function which_istio_version {
 }
 
 function install {
-	echo "Install"
-	echo "${ASDF_INSTALL_VERSION}"
-	echo "${ASDF_INSTALL_PATH}"
 	curl -L https://istio.io/downloadIstio \
 	  | ISTIO_VERSION="$(which_istio_version)" sh -
-	mv -v "./istio-${ASDF_INSTALL_VERSION}/*" "${ASDF_INSTALL_PATH}"
+	mv -v ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
 }
 
 function list-all {
-	echo "List all versions"
 	cache_istio_versions
 	local cache_file="${CACHE_DIR}/istio.releases"
 	tr '\n' ' ' < "$cache_file"
 }
 
 function uninstall {
-   echo "Uninstall"
-   echo "${ASDF_INSTALL_VERSION}"
-   echo "${ASDF_INSTALL_PATH}"
    rm -rf "${ASDF_INSTALL_PATH}"
 }
 
