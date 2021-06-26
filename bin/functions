@@ -33,10 +33,13 @@ function which_istio_version {
 	echo "${ISTIO_VERSION}"
 }
 
-function install {
-	curl -L https://istio.io/downloadIstio \
-	  | ISTIO_VERSION="$(which_istio_version)" sh - &>/dev/null
-	echo "Downloading and Installing Istio: $(which_istio_version)"
+function install {	
+	echo "Downloading and Istio $(which_istio_version)"
+	curl -O downloadAndInstallIstio.sh -L https://istio.io/downloadIstio
+	chmod +x downloadAndInstallIstio.sh
+	ISTIO_VERSION="$(which_istio_version)" 
+  	nohup ./downloadAndInstallIstio.sh &
+	wait
 	mv ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
 	rm -rf ./istio-"${ASDF_INSTALL_VERSION}"
 }

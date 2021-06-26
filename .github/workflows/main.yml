@@ -6,35 +6,46 @@ on:
       - "bin/**"
       - "!.github/workflows/**"
       - ".github/workflows/main.yml"
+env:
+  ASDF_VERSION: v0.8.1
+  ARBITARY_ISTIO_VERSION: 1.8.6
 jobs:
-  buildAnDeploySite:
+  buildAndReleasePlugin:
     name: "Build and Release Plugin"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: istio-latest-version
-        run: |
-          ISTIO_LATEST_VERSION=$(curl -sL https://github.com/istio/istio/releases | grep -o 'releases/[0-9]*.[0-9]*.[0-9]*/' | sort --version-sort | awk -F'/' '{ print $2}' | tail -n1)
-          echo "::set-output name=istio-version::$ISTIO_LATEST_VERSION"
+      - name: "Get Latest Istio Release"
+        id: istio-latest-version
+        uses: actions/github-script@v4.0.1
+        with:
+          result-encoding: string
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            return github.repos.getLatestRelease({
+              repo: 'istio',
+              owner: 'istio'
+            })
+            .then(result => { return result.data.tag_name } )
+            .catch(err => console.log(err))
       - name: asdf-plugin-test
+        id: asdf-plugin-latest-test
         run: |
           sudo apt install curl git
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.8.1
+          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "${ASDF_VERSION}"
           . $HOME/.asdf/asdf.sh
-          asdf plugin test istio . 'istioctl version --short --remote=false' &> ./out.log
-          INSTALLED_VERSION=$(cat ./out.log)
-          echo "Latest Istio Version ... $ISTIO_LATEST_VERSION"
-          echo "Installed Istio ... $INSTALLED_VERSION)"
-          [[ "$ISTIO_LATEST_VERSION" = "$INSTALLED_VERSION" ]] && installed="OK" || installed="KO"
+          INSTALLED_VERSION=$(asdf plugin test istio . 'istioctl version --short --remote=false')
+          echo "Latest Istio Version ... ${ISTIO_LATEST_VERSION}"
+          echo "Installed Istio ... ${INSTALLED_VERSION}"
+          [[ "${ISTIO_LATEST_VERSION}" == "${INSTALLED_VERSION}" ]] && installed="OK" || installed="KO"
           echo "::set-output name=installed::$installed"
         env:
           GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided
-          ISTIO_LATEST_VERSION: ${{ steps.istio-latest-version.outputs.istio-version }}
-
+          ISTIO_LATEST_VERSION: ${{ steps.istio-latest-version.outputs.result }}
       - uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
-        if: "steps.asdf-plugin-test.outputs.installed == 'OK'"
+        if: ${{ !env.ACT || steps.asdf-plugin-latest-test.outputs.installed === 'OK'" }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
