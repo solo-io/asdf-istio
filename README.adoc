@@ -1,18 +1,29 @@
 = asdf-vm plugin for Istio
 
-The https://asdf-vm.com/[asdf-vm] plugin to install https://istio.io[Istio].
+The https://asdf-vm.com/[asdf-vm] plugin to install and manage multiple https://istio.io[Istio] versions.
 
-== Pre-requisite
+== Pre-requisites
 
 - https://asdf-vm.com/[asdf-vm]
-
-== Usage
+- [bash v5.0](https://www.gnu.org/software/bash/)
+- [curl](https://curl.haxx.se/)
 
 == Install
 
 [source,bash]
 ----
-asdf plugin add istio
+asdf plugin-add istio https://github.com/kameshsampath/asdf-vm-plugin-istio
+----
+
+== Use
+
+Check [asdf](https://asdf-vm.github.io/asdf/) for instructions on how to install & manage versions of Istio.
+
+== List Installable Istio versions
+
+[source,bash]
+----
+asdf list-all istio
 ----
 
 == Download and install latest
@@ -39,4 +50,12 @@ asdf local istio <istio-verison>#<.>
 
 The command will create a `.tools-version` in the local directory pointing. The path will now be adjusted to use the Istio version used in the command
 
-To set a Istio version globally, use `asdf global istio <istio-version>`
+To set a Istio version globally, run:
+
+[source,bash]
+----
+asdf global istio <istio-version>
+----
+
+== License
+link:./LICENSE[Apache License v2]
