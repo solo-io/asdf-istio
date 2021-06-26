@@ -3,13 +3,31 @@
 
 set -o nounset -o pipefail -o errexit
 
-	# Determine Istio version to download
+CACHE_DIR="${TMPDIR:-/tmp}/istio.releases"
+
+if [ ! -d "${CACHE_DIR}" ]
+then
+    mkdir -p "${CACHE_DIR}"
+fi
+
+trap 'test -d "${TEMP_DIR}" && rm -rf "${TEMP_DIR}"' EXIT
+
+function cache_istio_versions {
+ local cache_file="${CACHE_DIR}/istio.releases"
+  if [ ! -f "$cache_file" ];
+  then
+	curl -sL https://github.com/istio/istio/releases | \
+                  grep -o 'releases/[0-9]*.[0-9]*.[0-9]*/' | sort --version-sort | awk -F'/' '{ print $2}' > "$cache_file"
+  fi
+}
+
+# Determine Istio version to download
 function which_istio_version {
+	cache_istio_versions
+	local cache_file="${CACHE_DIR}/istio.releases"
 	if [ -z "$ASDF_INSTALL_VERSION" ] || [ "$ASDF_INSTALL_VERSION" == "latest" ];
 	then
-	ISTIO_VERSION="$(curl -sL https://github.com/istio/istio/releases | \
-					grep -o 'releases/[0-9]*.[0-9]*.[0-9]*/' | sort --version-sort | \
-					tail -1 | awk -F'/' '{ print $2}')"
+	ISTIO_VERSION="$(sort --version-sort < "${cache_file}" | tail -n1)"
 	ISTIO_VERSION="${ISTIO_VERSION##*/}"
 	else
 	  ISTIO_VERSION="${ASDF_INSTALL_VERSION}"
@@ -27,8 +45,9 @@ function install {
 }
 
 function list-all {
-	return $(curl -sL https://github.com/istio/istio/releases | \
-                  grep -o 'releases/[0-9]*.[0-9]*.[0-9]*/' | sort --version-sort | awk -F'/' '{ print $2}')
+	cache_istio_versions
+	local cache_file="${CACHE_DIR}/istio.releases"
+	cat "$cache_file"
 }
 
 function uninstall {
