@@ -1,8 +1,9 @@
 # Changelog
 
-## [0.1.0](https://www.github.com/kameshsampath/asdf-istio/compare/v0.0.0...v0.1.0) (2021-06-28)
+## 1.0.0 (2021-06-26)
 
 
-### Features
+### Bug Fixes
 
-* first release ([eaf40f8](https://www.github.com/kameshsampath/asdf-istio/commit/eaf40f8aad6b0aa41c62f1d0c56c6c09d61e2d86))
+* add asdf install to workflow ([9004cbe](https://www.github.com/kameshsampath/asdf-vm-plugin-istio/commit/9004cbe05d84006906d714cdf393729a6d09fb45))
+* workflow ([8e5172a](https://www.github.com/kameshsampath/asdf-vm-plugin-istio/commit/8e5172acc4b2ac20a6ccc940ebf2a9cfce39255c))
