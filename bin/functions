@@ -35,14 +35,8 @@ function which_istio_version {
 
 function install {	
 	echo "Downloading and Istio $(which_istio_version)"
-	local install_file="${CACHE_DIR}/downloadAndInstallIstio.sh"
-	if [ ! -f "$install_file" ];
-	then 
-	  curl -o "$install_file" -sL https://istio.io/downloadIstio
-	fi
-	echo "Install file: $install_file"
-	ISTIO_VERSION="$(which_istio_version)"
-	. "$install_file"
+	curl -sL https://istio.io/downloadIstio \
+	  ISTIO_VERSION="$(which_istio_version)" sh - 
 	mv ./istio-"${ASDF_INSTALL_VERSION}"/* "${ASDF_INSTALL_PATH}"
 	rm -rf ./istio-"${ASDF_INSTALL_VERSION}"
 }
