@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# shellcheck source=/dev/null
+
+set -o nounset -o pipefail -o errexit
+
+echo "UnInstall"
+echo "${ASDF_INSTALL_VERSION}"
+echo "${ASDF_INSTALL_PATH}"
