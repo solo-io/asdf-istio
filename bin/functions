@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck source=/dev/null
-
-set -o nounset -o pipefail -o errexit
-
+source "$ASDF_DIR/lib/utils.bash"
 CACHE_DIR="${TMPDIR:-/tmp}/istio.releases"
 
 if [ ! -d "${CACHE_DIR}" ]
