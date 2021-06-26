@@ -47,7 +47,7 @@ function install {
 function list-all {
 	cache_istio_versions
 	local cache_file="${CACHE_DIR}/istio.releases"
-	cat "$cache_file"
+	tr '\n' ' ' < "$cache_file"
 }
 
 function uninstall {
