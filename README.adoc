@@ -1,0 +1,42 @@
+= asdf-vm plugin for Istio
+
+The https://asdf-vm.com/[asdf-vm] plugin to install https://istio.io[Istio].
+
+== Pre-requisite
+
+- https://asdf-vm.com/[asdf-vm]
+
+== Usage
+
+== Install
+
+[source,bash]
+----
+asdf plugin add istio
+----
+
+== Download and install latest
+
+[source,bash]
+----
+asdf install istio latest
+----
+
+== Download and install specific version
+
+[source,bash]
+----
+asdf install istio 1.8.6
+----
+
+To make your Istio/Kubernetes projects use a specific version of Istio, run the following command from the root of project:
+
+[source,bash]
+----
+# e.g. asdf local istio 1.8.6
+asdf local istio <istio-verison>#<.>
+----
+
+The command will create a `.tools-version` in the local directory pointing. The path will now be adjusted to use the Istio version used in the command
+
+To set a Istio version globally, use `asdf global istio <istio-version>`
