@@ -7,7 +7,7 @@ on:
       - "!.github/workflows/**"
       - ".github/workflows/main.yml"
 jobs:
-  plugin_test:
+  pluginTest:
     strategy:
       fail-fast: false
       matrix:
@@ -58,9 +58,9 @@ jobs:
           fi
           echo "::set-output name=release::$INSTALL_RESULT"
         env:
-          LATEST_VERSION: "${{ steps.istio-latest-version.outputs.result }}"
-          LATEST_STDOUT: "${{ steps.asdf-plugin-latest-test.outputs.stdout.lines.join(\"\n\") }}"
-          PINNED_STDOUT: "${{ fromJson(steps.asdf-istio-plugin-pinned-testoutputs.stdout.lines.join(\"\n\") }}"
+          LATEST_VERSION: ${{ steps.istio-latest-version.outputs.result }}
+          LATEST_STDOUT: ${{ join(steps.asdf-plugin-latest-test.outputs.stdout.lines,"\n") }}
+          PINNED_STDOUT: ${{ join(steps.asdf-istio-plugin-pinned-test.outputs.stdout.lines,"\n") }}
 
   lint:
     runs-on: ubuntu-latest
@@ -75,7 +75,7 @@ jobs:
   releasePlugin:
     runs-on: ubuntu-latest
     name: "Release Plugin"
-    needs: plugin_test
+    needs: pluginTest
     if: ${{ !env.ACT && steps.evaluate-test-results.output.release == 'OK' }}
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v2.7.0
