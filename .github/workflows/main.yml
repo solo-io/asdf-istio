@@ -6,6 +6,8 @@ on:
       - "bin/**"
       - "!.github/workflows/**"
       - ".github/workflows/main.yml"
+env:
+  RELEASE: "KO"
 jobs:
   pluginTest:
     strategy:
@@ -56,7 +58,7 @@ jobs:
           then 
              INSTALL_RESULT='OK'
           fi
-          echo "::set-output name=release::$INSTALL_RESULT"
+          echo "::set-env name=RELEASE::$INSTALL_RESULT"
         env:
           LATEST_VERSION: ${{ steps.istio-latest-version.outputs.result }}
           LATEST_STDOUT: ${{ join(steps.asdf-plugin-latest-test.outputs.stdout.lines,'\n') }}
@@ -75,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Release Plugin"
     needs: pluginTest
-    if: "${{ steps.evaluate-test-results.outputs.release == 'OK' }}"
+    if: "${{ env.RELEASE == 'OK' }}"
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
