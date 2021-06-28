@@ -58,11 +58,11 @@ jobs:
           then 
              INSTALL_RESULT='OK'
           fi
-          echo "::set-env name=RELEASE::$INSTALL_RESULT"
+          echo "::set-output name=release::$INSTALL_RESULT"
         env:
           LATEST_VERSION: "${{ steps.istio-latest-version.outputs.result }}"
-          LATEST_STDOUT: "${{ join(steps.asdf-plugin-latest-test.outputs.stdout.lines,'\n') }}"
-          PINNED_STDOUT: "${{ join(steps.asdf-istio-plugin-pinned-test.outputs.stdout.lines,'\n') }}"
+          LATEST_STDOUT: "${{ join(toJson(steps.asdf-plugin-latest-test.outputs.stdout).lines,'\n') }}"
+          PINNED_STDOUT: "${{ join(toJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines,'\n') }}"
 
   lint:
     runs-on: ubuntu-latest
@@ -80,7 +80,7 @@ jobs:
     name: "Release Plugin"
     needs: pluginTest
     steps:
-      - if: "${{ !env.ACT && env.RELEASE == 'OK' }}"
+      - if: "${{ !env.ACT && pluginTest.steps.evaluate-test-results.outputs.release == 'OK' }}"
         uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
         with:
