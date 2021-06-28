@@ -8,13 +8,13 @@ on:
       - ".github/workflows/main.yml"
 jobs:
   plugin_test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - macos-latest
-          - ubuntu-latest
-    runs-on: ${{ matrix.os }}
+    # strategy:
+    #   fail-fast: false
+    #   matrix:
+    #     os:
+    #       - macos-latest
+    #       - ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -61,6 +61,7 @@ jobs:
           LATEST_VERSION: ${{ steps.istio-latest-version.outputs.result }}
           LATEST_STDOUT: ${{ fromJson(steps.asdf-plugin-latest-test.outputs.stdout).lines.join("\n") }}
           PINNED_STDOUT: ${{ fromJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines.join("\n") }}
+
   lint:
     runs-on: ubuntu-latest
     if: ${{ !env.ACT }}
