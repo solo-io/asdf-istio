@@ -58,9 +58,9 @@ jobs:
           fi
           echo "::set-output name=release::$INSTALL_RESULT"
         env:
-          LATEST_VERSION: '${{ steps.istio-latest-version.outputs.result }}'
-          LATEST_STDOUT: '${{ fromJson(steps.asdf-plugin-latest-test.outputs.stdout).lines.join("\n") }}'
-          PINNED_STDOUT: '${{ fromJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines.join("\n") }}'
+          LATEST_VERSION: "${{ steps.istio-latest-version.outputs.result }}"
+          LATEST_STDOUT: "${{ steps.asdf-plugin-latest-test.outputs.stdout.lines.join(\"\n\") }}"
+          PINNED_STDOUT: "${{ fromJson(steps.asdf-istio-plugin-pinned-testoutputs.stdout.lines.join(\"\n\") }}"
 
   lint:
     runs-on: ubuntu-latest
