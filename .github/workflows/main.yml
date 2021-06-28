@@ -64,6 +64,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    if: "${{ !env.ACT }}"
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -75,7 +76,7 @@ jobs:
     runs-on: ubuntu-latest
     name: "Release Plugin"
     needs: pluginTest
-    if: ${{ steps.evaluate-test-results.output.release == 'OK' }}
+    if: "${{ !env.ACT && steps.evaluate-test-results.outputs.release == 'OK' }}"
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
