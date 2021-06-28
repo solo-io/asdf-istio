@@ -6,8 +6,6 @@ on:
       - "bin/**"
       - "!.github/workflows/**"
       - ".github/workflows/main.yml"
-env:
-  RELEASE: "KO"
 jobs:
   pluginTest:
     strategy:
@@ -61,8 +59,8 @@ jobs:
           echo "::set-output name=release::$INSTALL_RESULT"
         env:
           LATEST_VERSION: "${{ steps.istio-latest-version.outputs.result }}"
-          LATEST_STDOUT: "${{ join(toJson(steps.asdf-plugin-latest-test.outputs.stdout).lines,'\n') }}"
-          PINNED_STDOUT: "${{ join(toJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines,'\n') }}"
+          LATEST_STDOUT: "${{ join(fromJson(steps.asdf-plugin-latest-test.outputs.stdout).lines,'\n') }}"
+          PINNED_STDOUT: "${{ join(fromJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines,'\n') }}"
 
   lint:
     runs-on: ubuntu-latest
