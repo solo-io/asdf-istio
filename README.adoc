@@ -12,7 +12,7 @@ The https://asdf-vm.com/[asdf-vm] plugin to install and manage multiple https://
 
 [source,bash]
 ----
-asdf plugin-add istio https://github.com/kameshsampath/asdf-vm-plugin-istio
+asdf plugin-add istio https://github.com/kameshsampath/asdf-istio
 ----
 
 == Use
