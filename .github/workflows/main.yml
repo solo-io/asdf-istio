@@ -78,7 +78,10 @@ jobs:
     name: "Release Plugin"
     needs: pluginTest
     steps:
-      - if: "${{ !env.ACT && steps.evaluate-test-results.outputs.release == 'OK' }}"
+      - name: Debug
+        run: |
+          echo "${{ jobs.pluginTest.steps.evaluate-test-results.outputs }}"
+      - if: "${{ !env.ACT && jobs.pluginTest.steps.evaluate-test-results.outputs.release == 'OK' }}"
         uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
         with:
