@@ -8,13 +8,13 @@ on:
       - ".github/workflows/main.yml"
 jobs:
   plugin_test:
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     os:
-    #       - macos-latest
-    #       - ubuntu-latest
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -75,6 +75,7 @@ jobs:
   releasePlugin:
     runs-on: ubuntu-latest
     name: "Release Plugin"
+    needs: plugin_test
     if: ${{ !env.ACT && steps.evaluate-test-results.output.release == 'OK' }}
     steps:
       - uses: GoogleCloudPlatform/release-please-action@v2.7.0
