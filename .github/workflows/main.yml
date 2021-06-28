@@ -63,7 +63,7 @@ jobs:
           PINNED_STDOUT: "${{ join(fromJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines,'\n') }}"
       - name: Debug
         run: |
-          echo "${{ jobs.pluginTest.steps.evaluate-test-results.outputs }}"
+          echo "${{ steps.evaluate-test-results.outputs }}"
       - if: "${{ !env.ACT && steps.evaluate-test-results.outputs.release == 'OK' }}"
         uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
