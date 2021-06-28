@@ -7,7 +7,7 @@ on:
       - "!.github/workflows/**"
       - ".github/workflows/main.yml"
 jobs:
-  pluginTest:
+  pluginTestAndRelease:
     strategy:
       fail-fast: false
       matrix:
@@ -61,6 +61,16 @@ jobs:
           LATEST_VERSION: "${{ steps.istio-latest-version.outputs.result }}"
           LATEST_STDOUT: "${{ join(fromJson(steps.asdf-plugin-latest-test.outputs.stdout).lines,'\n') }}"
           PINNED_STDOUT: "${{ join(fromJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines,'\n') }}"
+      - name: Debug
+        run: |
+          echo "${{ jobs.pluginTest.steps.evaluate-test-results.outputs }}"
+      - if: "${{ !env.ACT && steps.evaluate-test-results.outputs.release == 'OK' }}"
+        uses: GoogleCloudPlatform/release-please-action@v2.7.0
+        id: release
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: simple
+          bump-minor-pre-major: true
 
   lint:
     runs-on: ubuntu-latest
@@ -72,19 +82,3 @@ jobs:
       - if: "${{ !env.ACT }}"
         name: Run ShellCheck
         run: shellcheck bin/*
-
-  releasePlugin:
-    runs-on: ubuntu-latest
-    name: "Release Plugin"
-    needs: pluginTest
-    steps:
-      - name: Debug
-        run: |
-          echo "${{ jobs.pluginTest.steps.evaluate-test-results.outputs }}"
-      - if: "${{ !env.ACT && jobs.pluginTest.steps.evaluate-test-results.outputs.release == 'OK' }}"
-        uses: GoogleCloudPlatform/release-please-action@v2.7.0
-        id: release
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          release-type: simple
-          bump-minor-pre-major: true
