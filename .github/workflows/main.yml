@@ -6,16 +6,21 @@ on:
       - "bin/**"
       - "!.github/workflows/**"
       - ".github/workflows/main.yml"
-env:
-  ASDF_VERSION: v0.8.1
-  ARBITARY_ISTIO_VERSION: 1.8.6
 jobs:
-  buildAndReleasePlugin:
-    name: "Build and Release Plugin"
-    runs-on: ubuntu-latest
+  plugin_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          # - macos-latest
+          - ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: "Git Config"
+        run: |
+          git config --global advice.objectNameWarning false
       - name: "Get Latest Istio Release"
         id: istio-latest-version
         uses: actions/github-script@v4.0.1
@@ -31,55 +36,48 @@ jobs:
             .catch(err => console.log(err))
       - name: "Latest Version Check"
         id: asdf-plugin-latest-test
-        run: |
-          sudo apt install curl git
-          git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch "${ASDF_VERSION}"
-          . $HOME/.asdf/asdf.sh
-          INSTALLED_VERSION='unknown' 
-          nohup asdf plugin test istio . 'istioctl version --short --remote=false' 2> /dev/null &
-          sleep_seconds=10
-          while true; do
-            if [ $sleep_seconds > 300 ] && [ $INSTALLED_VERSION != "unknown" ] ; then
-              break
-            fi
-            sleep $sleep_seconds
-            while read line; do
-              INSTALLED_VERSION=$line
-            done < <(cat nohup.out)
-            ((sleep_seconds=sleep_seconds+10))
-          done
-          echo "Latest Istio Version ... ${ISTIO_LATEST_VERSION}"
-          echo "Installed Istio ... ${INSTALLED_VERSION}"
-          [[ "${ISTIO_LATEST_VERSION}" == "${INSTALLED_VERSION}" ]] && installed="OK" || installed="KO"
-          echo "::set-output name=installed::$installed"
-        env:
-          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided
-          ISTIO_LATEST_VERSION: ${{ steps.istio-latest-version.outputs.result }}
+        uses: kameshsampath/asdf-vm-actions/plugin-test@add-outputs-to-test
+        with:
+          command: istioctl version --short --remote=false
       - name: "Pinned Version Check::1.8.6"
         id: asdf-istio-plugin-pinned-test
+        uses: kameshsampath/asdf-vm-actions/plugin-test@add-outputs-to-test
+        with:
+          command: istioctl version --short --remote=false
+          version: 1.8.6
+      - name: "Evaluate Results"
+        id: evaluate-test-results
         run: |
-          . $HOME/.asdf/asdf.sh
-          INSTALLED_VERSION='unknown' 
-          nohup asdf plugin test istio . --asdf-tool-version '1.8.6' 'istioctl version --short --remote=false' 2> /dev/null &
-          sleep_seconds=10
-          while true; do
-            if [ $sleep_seconds > 300 ] && [ $INSTALLED_VERSION != "unknown" ] ; then
-              break
-            fi
-            sleep $sleep_seconds
-            while read line; do
-              INSTALLED_VERSION=$line
-            done < <(cat nohup.out)
-            ((sleep_seconds=sleep_seconds+10))
-          done
-          echo "Installed Istio ... ${INSTALLED_VERSION}"
-          [[ "1.8.6" == "${INSTALLED_VERSION}" ]] && installed="OK" || installed="KO"
-          echo "::set-output name=installed::$installed"
+          LATEST_INSTALLED_VERSION=$(echo "${LATEST_STDOUT}" | tail -n1)
+          PINNED_INSTALLED_VERSION=$(echo "${PINNED_STDOUT}" | tail -n1)
+
+          INSTALL_RESULT='KO'
+          if [[ "${LATEST_INSTALLED_VERSION}" == "${LATEST_VERSION}" ]] && [[ "${PINNED_INSTALLED_VERSION}" == "1.8.6" ]];
+          then 
+             INSTALL_RESULT='OK'
+          fi
+          echo "::set-output name=release::$INSTALL_RESULT"
         env:
-          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }} # automatically provided
+          LATEST_VERSION: ${{ steps.istio-latest-version.outputs.result }}
+          LATEST_STDOUT: ${{ fromJson(steps.asdf-plugin-latest-test.outputs.stdout).lines.join("\n") }}
+          PINNED_STDOUT: ${{ fromJson(steps.asdf-istio-plugin-pinned-test.outputs.stdout).lines.join("\n") }}
+  lint:
+    runs-on: ubuntu-latest
+    if: ${{ !env.ACT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run ShellCheck
+        run: shellcheck bin/*
+
+  releasePlugin:
+    runs-on: ubuntu-latest
+    name: "Release Plugin"
+    if: ${{ !env.ACT && steps.evaluate-test-results.output.release == 'OK' }}
+    steps:
       - uses: GoogleCloudPlatform/release-please-action@v2.7.0
         id: release
-        if: ${{ !env.ACT && steps.asdf-plugin-latest-test.outputs.installed == 'OK' && steps.asdf-istio-plugin-pinned-test.outputs.installed == 'OK' }}
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: simple
