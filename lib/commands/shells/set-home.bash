@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 compute_istio_home(){
  echo "BASH::Setting Istio HOME"
  local istioctl_path
