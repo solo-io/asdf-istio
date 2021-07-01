@@ -23,6 +23,8 @@ bash_compute_istio_home(){
   fi
 }
 
+export_for_shell(){
+  
 case "$MY_SHELL" in
 'fish')
  ;;
@@ -34,4 +36,12 @@ case "$MY_SHELL" in
 *)
 bash_compute_istio_home
 ;;
-esac  
+esac 
+
+}
+
+case "$1" in
+  *)
+    export_for_shell
+    ;;
+esac
