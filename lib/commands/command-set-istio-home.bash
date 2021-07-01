@@ -2,18 +2,32 @@ set -o pipefail
 
 MY_SHELL=$(basename "$MY_SHELL")
 
-compute_istio_home(){
-local istioctl_path
-istioctl_path="$(asdf which istioctl)"
-local istioctl_bin
-istioctl_bin="$( cd -P "$( dirname "$istioctl_path" )" && pwd )"
-istio_home="$(dirname "$istioctl_bin")"
-echo "$istio_home" 
+zsh_compute_istio_home() {
+  local istioctl_path
+  istioctl_path="$(asdf which istioctl)"
+  if [[ -n "${istioctl_path}" ]]; then
+    export ISTIO_HOME
+    ISTIO_HOME="$(dirname "$(dirname "${istioctl_path:A}")")"
+  fi
 }
+
+bash_compute_istio_home(){
+ local istioctl_path
+ istioctl_path="$(asdf which istioctl)"
+  if [[ -n "${istioctl_path}" ]]; then
+    export ISTIO_HOME
+    ISTIO_HOME="$(dirname "$(dirname "${istioctl_path:A}")")"
+  fi
+}
+
 case "$MY_SHELL" in
 'fish')
  ;;
+'zsh')
+  autoload -U add-zsh-hook
+  add-zsh-hook precmd zsh_compute_istio_home
+ ;;
 *)
-export ISTIO_HOME="$(compute_istio_home)"
+bash_compute_istio_home
 ;;
 esac
