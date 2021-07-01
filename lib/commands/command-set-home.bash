@@ -31,15 +31,18 @@ MY_SHELL="$(basename "$SHELL")"
 case "$MY_SHELL" in
 'bash')
     echo "bash"
-    $SHELL "$(basedir)/shells/set-home.bash"
+    export ISTIO_HOME
+    ISTIO_HOME="$(asdf where istio)"
+    echo "BASH::Set ISTIO_HOME to $ISTIO_HOME"
   ;;
 'fish')
   echo "fish"
-   $SHELL "$(basedir)/shells/set-home.fish"
+   #TODO
   ;;
 'zsh')
     echo "zsh"
-    $SHELL "$(basedir)/shells/set-home.zsh"
+    $SHELL export ISTIO_HOME="$(asdf where istio)"
+    $SHELL -c "echo ZSH::Set ISTIO_HOME to $ISTIO_HOME"
   ;;
 *)
   echo "Shell no supported"
