@@ -26,20 +26,20 @@ basedir() {
 }
 
 MY_SHELL="$(basename "$SHELL")"
-echo "My Shell is $MY_SHELL"
+# echo "My Shell is $MY_SHELL"
 
 case "$MY_SHELL" in
 'bash')
     echo "bash"
-    source "$(basedir)/shells/set-home.bash"
+    $SHELL "$(basedir)/shells/set-home.bash"
   ;;
 'fish')
   echo "fish"
-   source "$(basedir)/shells/set-home.fish"
+   $SHELL "$(basedir)/shells/set-home.fish"
   ;;
 'zsh')
     echo "zsh"
-    source "$(basedir)/shells/set-home.zsh"
+    $SHELL "$(basedir)/shells/set-home.zsh"
   ;;
 *)
   echo "Shell no supported"

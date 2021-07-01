@@ -1,5 +1,3 @@
-#!/usr/bin/env zsh
-
 compute_istio_home() {
   echo "ZSH::Setting Istio HOME"
   local istioctl_path
