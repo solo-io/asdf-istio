@@ -41,7 +41,7 @@ case "$MY_SHELL" in
   ;;
 'zsh')
     echo "zsh"
-    $SHELL export ISTIO_HOME="$(asdf where istio)"
+    $SHELL -c "export ISTIO_HOME=$(asdf where istio)"
     $SHELL -c "echo ZSH::Set ISTIO_HOME to $ISTIO_HOME"
   ;;
 *)
