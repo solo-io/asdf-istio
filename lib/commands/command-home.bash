@@ -34,4 +34,4 @@ case "$MY_SHELL" in
 *)
 bash_compute_istio_home
 ;;
-esac
+esac  
