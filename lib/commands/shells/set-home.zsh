@@ -9,5 +9,4 @@ compute_istio_home() {
   echo "ZSH::Set ISTIO_HOME=$ISTIO_HOME"
 }
 
-autoload -U add-zsh-hook
-add-zsh-hook precmd compute_istio_home
+compute_istio_home
