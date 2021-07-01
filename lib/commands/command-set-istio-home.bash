@@ -1,7 +1,14 @@
-#!/usr/bin/env bash
+set -o pipefail
 
-set -euo pipefail
+MY_SHELL=$(basename "$MY_SHELL")
 
+case "$MY_SHELL" in
+'fish')
+ ;;
+*)
 istioctl_path="$(asdf which istioctl)"
 export ISTIO_HOME
-ISTIO_HOME="$( cd -P "$( dirname "$istioctl_path" )" && pwd )"
+ISTIOCTL_BIN="$( cd -P "$( dirname "$istioctl_path" )" && pwd )"
+ISTIO_HOME="$(dirname "$ISTIOCTL_BIN")"
+;;
+esac
