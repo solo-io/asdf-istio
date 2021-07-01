@@ -9,7 +9,7 @@ compute_istio_home(){
   echo "Set ISTIO_HOME to $ISTIO_HOME"
 }
 
-MY_SHELL=$(basename "$MY_SHELL")
+MY_SHELL="$(basename "$MY_SHELL")"
 echo "My Shell is $MY_SHELL"
 
 case "$MY_SHELL" in
