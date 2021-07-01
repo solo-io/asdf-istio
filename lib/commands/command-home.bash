@@ -22,7 +22,7 @@ bash_compute_istio_home(){
 }
 
 export_for_shell(){
-  
+echo 'export_for_shell'
 case "$MY_SHELL" in
 'fish')
  ;;
