@@ -14,12 +14,15 @@ echo "My Shell is $MY_SHELL"
 
 case "$MY_SHELL" in
 'fish')
+ echo "Fish"
  ;;
 'zsh')
+  echo "Default"
   autoload -U add-zsh-hook
   add-zsh-hook precmd compute_istio_home
  ;;
 *)
+echo "Default"
 compute_istio_home
 ;;
 esac 
