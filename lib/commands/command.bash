@@ -18,7 +18,7 @@ function _asdf_istio_absolute_dir_path {
 function set_istio_home() {
   local istioctl_path
   istioctl_path="$(asdf which istioctl)"
-  if [[ -n "${iistioctl_path}" ]]; then
+  if [[ -n "${istioctl_path}" ]]; then
     export ISTIO_HOME
     ISTIO_HOME="$(dirname "$(_asdf_istio_absolute_dir_path "${istioctl_path}")")"
   fi
