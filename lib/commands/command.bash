@@ -16,22 +16,25 @@ _asdf_istio_absolute_dir_path() {
 }
 
 set_istio_home() {
+  local my_shell
+  my_shell=$(basename "$SHELL")
   local istioctl_path
   istioctl_path="$(asdf which istioctl)"
   ISTIO_HOME_PATH="$(_asdf_istio_absolute_dir_path "${istioctl_path}")"
   if [[ -n "${istioctl_path}" ]]; then
-    case "$MY_SHELL" in 
+    case "$my_shell" in 
     'fish')
       $SHELL set -gx ISTIO_HOME "$ISTIO_HOME_PATH"
       ;;
     *)
-    export ISTIO_HOME="$ISTIO_HOME_PATH"
+    ISTIO_HOME="$ISTIO_HOME_PATH"
     esac
   fi
 }
 
 case "$*" in
 'set istio home')
+    export ISTIO_HOME
     set_istio_home
     ;;
 *)
