@@ -1,10 +1,8 @@
 set -o pipefail
-set +x
 
 MY_SHELL=$(basename "$MY_SHELL")
 
 zsh_compute_istio_home() {
-  echo "2"
   local istioctl_path
   istioctl_path="$(asdf which istioctl)"
   if [[ -n "${istioctl_path}" ]]; then
@@ -29,7 +27,6 @@ case "$MY_SHELL" in
 'fish')
  ;;
 'zsh')
-  echo "1"
   autoload -U add-zsh-hook
   add-zsh-hook precmd zsh_compute_istio_home
  ;;
@@ -40,8 +37,4 @@ esac
 
 }
 
-case "$1" in
-  *)
-    export_for_shell
-    ;;
-esac
+export_for_shell
