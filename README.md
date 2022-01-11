@@ -11,7 +11,7 @@ The [asdf-vm](https://asdf-vm.com/) plugin to install and manage multiple [Istio
 ## Install
 
 ```shell
-asdf plugin-add istio https://github.com/kameshsampath/asdf-vm-plugin-istio
+asdf plugin-add istio https://github.com/solo-io/asdf-istio
 ```
 
 ## List Installable Istio versions
