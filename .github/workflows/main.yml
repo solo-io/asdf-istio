@@ -36,12 +36,12 @@ jobs:
             .catch(err => console.log(err))
       - name: "Latest Version Check"
         id: asdf-plugin-latest-test
-        uses: kameshsampath/asdf-vm-actions/plugin-test@655f2187b902fc8858fa8d8eecd41d77d3489178 # add-outputs-to-test
+        uses: kameshsampath/asdf-vm-actions/plugin-test@655f2187b902fc8858fa8d8eecd41d77d3489178 # add-outputs-to-test (2026-10-16)
         with:
           command: istioctl version --short --remote=false
       - name: "Pinned Version Check::1.8.6"
         id: asdf-istio-plugin-pinned-test
-        uses: kameshsampath/asdf-vm-actions/plugin-test@655f2187b902fc8858fa8d8eecd41d77d3489178 # add-outputs-to-test
+        uses: kameshsampath/asdf-vm-actions/plugin-test@655f2187b902fc8858fa8d8eecd41d77d3489178 # add-outputs-to-test (2026-10-16)
         with:
           command: istioctl version --short --remote=false
           version: 1.8.6
